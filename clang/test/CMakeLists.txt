@@ -98,6 +98,7 @@ if (CLANG_BUILD_EXAMPLES)
     CallSuperAttr
     clang-interpreter
     PrintFunctionNames
+    PrintTokensSyntax
     )
 endif ()
 
