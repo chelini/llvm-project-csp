@@ -1252,7 +1252,7 @@ void Parser::ProcessPluginSyntax(ParsingDeclarator &D) {
   // the original function.
   
   std::string NewName;
-  NewName ="__"+ D.getIdentifier()->getName().str();
+  NewName = D.getIdentifier()->getName().str();
  
   IdentifierInfo &VariantII = Actions.Context.Idents.get(NewName);
   D.SetIdentifier(&VariantII, D.getBeginLoc()); 
