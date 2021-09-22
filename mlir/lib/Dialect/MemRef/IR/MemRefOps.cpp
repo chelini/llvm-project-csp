@@ -2274,6 +2274,37 @@ void TensorLoadOp::getCanonicalizationPatterns(RewritePatternSet &results,
 }
 
 //===----------------------------------------------------------------------===//
+// TensorStoreOp
+//===----------------------------------------------------------------------===//
+
+namespace {
+// %10 = TensorLoadOp(%9)
+// store %10 % 6
+// =
+// copy (%9 %6)
+struct ReplaceWithMemRefCopy : public OpRewritePattern<TensorStoreOp> {
+  using OpRewritePattern<TensorStoreOp>::OpRewritePattern;
+
+  LogicalResult matchAndRewrite(TensorStoreOp storeOp,
+                                PatternRewriter &rewriter) const override {
+    Value toStore = storeOp.tensor();
+    auto tensorLoadOp = toStore.getDefiningOp<TensorLoadOp>();
+    if (!tensorLoadOp || !toStore.hasOneUse())
+      return failure();
+    rewriter.replaceOpWithNewOp<CopyOp>(storeOp, tensorLoadOp.memref(),
+                                        storeOp.memref());
+    return success();
+  }
+};
+
+} // namespace
+
+void TensorStoreOp::getCanonicalizationPatterns(RewritePatternSet &results,
+                                                MLIRContext *context) {
+  results.add<ReplaceWithMemRefCopy>(context);
+}
+
+//===----------------------------------------------------------------------===//
 // TransposeOp
 //===----------------------------------------------------------------------===//
 

@@ -1477,6 +1477,7 @@ def TensorStoreOp : MemRef_Op<"tensor_store",
   let verifier = ?;
 
   let assemblyFormat = "$tensor `,` $memref attr-dict `:` type($memref)";
+  let hasCanonicalizer = 1;
 }
 
 //===----------------------------------------------------------------------===//
